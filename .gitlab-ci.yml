@@ -1,0 +1,72 @@
+image: node:slim
+
+stages:
+  - build
+  - unit_tests
+  - sonarqube_analysis
+  - deploy
+
+build_job:
+    stage: build
+    script:
+        - cd MedEcare
+        - npm install --no-audit --progress=false
+
+unit_tests_job:
+  stage: unit_tests
+  image: linuxserver/mariadb:latest
+  variables:
+    MYSQL_ROOT_PASSWORD: am001541
+    MYSQL_HOST: localhost
+    MYSQL_PORT: 3306
+  script:
+    - apk update
+    - apk add nodejs npm
+    - cd MedEcare
+    - mariadb -uroot -pam001541 < update.sql
+    - npm install --no-audit --progress=false
+    - npm run dev:development &
+    - sleep 10
+    - npm run test || true
+    - pkill -f "npm run dev:development" || true
+
+sonarqube_analysis:
+  stage: sonarqube_analysis
+  image: sonarsource/sonar-scanner-cli:latest
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - sonar-scanner -Dsonar.projectKey=medecare_medecare -Dsonar.organization=medecare -Dsonar.sources=./MedEcare -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+
+deploy_job:
+  stage: deploy
+  tags:
+    - dind
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    # Configuration SSH
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan 172.201.120.198 >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    # Configuration Docker
+    - cd MedEcare
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker build -t oraciel/medecare:latest .
+    - docker push oraciel/medecare:latest
+    - docker logout
+    - ssh -o StrictHostKeyChecking=no azureuser@172.201.120.198 "while ! sudo mysqladmin ping -h localhost -uroot -pam001541 --silent; do sleep 5; done"
+    - ssh -o StrictHostKeyChecking=no azureuser@172.201.120.198 "sudo docker pull oraciel/medecare:latest && sudo systemctl start mariadb && sudo docker compose up -d"
+    - ssh -o StrictHostKeyChecking=no azureuser@172.201.120.198 "while [ \$(sudo docker inspect -f '{{.State.Status}}' azureuser-medecare-1) != 'running' ]; do sleep 10; done"
+  timeout: 2h
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $DEPLOY_ENV == "prod"'
+  
