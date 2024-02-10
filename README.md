@@ -1,6 +1,7 @@
 # Guide d'Installation - Projet Medecare
 
 Ce guide vous fournira les étapes nécessaires pour installer et démarrer le projet Medecare en utilisant Docker.
+Ce projet a été realisé avec React, Vite, NodeJS, MariaDB et Docker.
 
 ## Prérequis
 
