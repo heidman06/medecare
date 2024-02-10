@@ -1,3 +1,17 @@
+### Mohamed Reda:
+- Mise en place de l'architecture.
+- Création de la base de données (Mise en place des tables et architecture de celle-ci) en local et sur la VM.
+- Mise en place du Docker Compose en local.
+- Mise en place de la PWA avec un service worker.
+- Configuration de la pipeline : configuration de la majorité de la pipeline et optimization.
+- Mise en place du front-end.
+- **Back-end:**
+  - Mise en place du backend avec la réalisation de toute la partie inscription.
+  - Liaison entre le backend et le frontend sur toutes les vues nécessaires.
+  - Affichage des capteurs dans l'espace patient et médecin.
+  - Stratégie complète pour les formulaires.
+  - Création de tokens de session pour accéder aux pages nécessaires.
+
 ### Thomas:
 
 - Réalisation de toutes les maquettes sur Figma.
@@ -11,9 +25,7 @@
   - Réalisation de tous les tests fonctionnels (19 tests).
   - Vérification si les composants sont correctement chargés et si leur contenu est présent.
 - Ajout de commentaires dans tout le code.
-- **Management:**
-  - Réalisation de tous les fichiers de management.
-- Réalisation de toutes les diapositives pour la partie de Mme Rochard et de ses diapositives pour la démo.
+
 
 ### Matthieu:
 
@@ -29,24 +41,7 @@
 
 ### Vincent:
 
-- Réalisation de ses diapositives pour la partie démo.
 - Configuration d'Azure.
 - Intégration de la clé SSH dans la pipeline et  pour se connecter à la VM (production).
 - Gestion de toute la partie SonarQube.
-- Mise en place de la pipeline au début du projet.
 - Configuration du push vers Docker Hub.
-
-### Mohamed Reda:
-
-- Mise en place de l'architecture.
-- Création de la base de données (Mise en place des tables et architecture de celle-ci) en local et sur la VM.
-- Mise en place du Docker Compose en local.
-- Mise en place de la PWA avec un service worker.
-- Configuration de la pipeline : configuration de la majorité de la pipeline et optimization.
-- **Back-end:**
-  - Mise en place du backend avec la réalisation de toute la partie inscription.
-  - Liaison entre le backend et le frontend sur toutes les vues nécessaires.
-  - Affichage des capteurs dans l'espace patient et médecin.
-  - Stratégie complète pour les formulaires.
-  - Création de tokens de session pour accéder aux pages nécessaires.
-- Réalisation de ses diapositives pour la partie démo avec des schémas détaillés.
